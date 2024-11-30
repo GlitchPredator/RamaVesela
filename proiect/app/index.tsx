@@ -1,16 +1,67 @@
-import { useState } from "react";
-import { StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator, Button } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
-
-const blurhash =
-  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
-
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { FirebaseError, initializeApp } from "firebase/app";
+import { firebaseConfig } from '../config/firebaseConfig';
+import { ToastAndroid } from "react-native";
 
 export default function Index() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
+  const [displayText, setDisplayText] = useState('');
+  const [successColor, setSuccessColor] = useState('#ff7e5f');
+
+  initializeApp(firebaseConfig);
+  const auth = getAuth();
+
+  const signUp = async () => {
+    try {
+      setIsLoading(true);
+      await createUserWithEmailAndPassword(auth, email, password);
+      setInfoMessage('✅ Contul a fost creat cu succes!\nApasa pe \'Autentificare\' pentru a continua.');
+      setSuccessColor('#24ed71');
+    }
+    catch(error) {
+      const infoMessage = error as FirebaseError;
+      setSuccessColor('#ff7e5f');
+
+      switch(infoMessage.code) {
+        case 'auth/invalid-email':
+          setInfoMessage('❌ Adresa de email este invalidă!')
+          break;
+        case 'auth/email-already-in-use':
+          setInfoMessage('❌ Adresa de email este deja utilizată!');
+          break;
+        case 'auth/weak-password':
+          setInfoMessage('ℹ️ Folosește o parola mai puternică.\n(Minim 8 caractere: cifre, litere si caractere speciale)');
+          break;
+        case 'auth/missing-password':
+          setInfoMessage('ℹ️ Trebuie sa introduci o parolă');
+          break;
+        case 'undefined':
+          setInfoMessage('');
+          break;
+        default:
+          setInfoMessage('❓A aparut o eroare: ' + infoMessage.code);
+          break;
+      }
+    }
+    finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (infoMessage) {
+      setDisplayText(infoMessage);
+    } else {
+      setDisplayText('');
+    }
+  }, [infoMessage]);
 
   return (
   <View style={styles.container}>
@@ -42,18 +93,17 @@ export default function Index() {
           placeholder="Parola"
           secureTextEntry
         />
-        {isLoading ? (
-          <ActivityIndicator size={'small'} color="#ffffff" style={{ margin: 28 }} />
-        ) : (
+        <View style={styles.statusContainer}>
+          {isLoading ? <ActivityIndicator size={'small'} color="#348ceb" /> : <Text>{displayText}</Text>}
+        </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={signUp}>
               <Text style={styles.buttonText}>Inregistrare</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: successColor}]}>
               <Text style={styles.buttonText}>Autentificare</Text>
             </TouchableOpacity>
           </View>
-        )}
       </KeyboardAvoidingView>
     </LinearGradient>
   </View>
@@ -83,6 +133,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
+  statusContainer: {
+    alignItems: 'center',
+  },
   buttonContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
@@ -101,11 +154,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+    zIndex:1,
   },
   buttonText: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+    zIndex: 1
   },
   input: {
     height: 50,

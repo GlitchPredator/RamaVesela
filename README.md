@@ -3,7 +3,7 @@
 ```bash
 <Curs title="SMA" cadruDidactic="Marcu Marius">
     <Realizator name="Gheoace Stelian Valentin" />
-    <Profesor coordonator="Banu-Taran Paul Cristian" >
+    <Profesor coordonator="Banu-Taran Paul Cristian" />
 </Curs>
 ```
 ---
