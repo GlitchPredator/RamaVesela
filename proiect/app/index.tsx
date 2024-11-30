@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator, Button } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError, initializeApp } from "firebase/app";
 import { firebaseConfig } from '../config/firebaseConfig';
-import { ToastAndroid } from "react-native";
+import { router } from "expo-router";
 
 export default function Index() {
   const [email, setEmail] = useState('');
@@ -55,6 +55,38 @@ export default function Index() {
     }
   }
 
+  const signIn = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithEmailAndPassword(auth, email ,password);
+      setInfoMessage('✅ Ai fost autentificat cu succes!');
+    }
+    catch (error) {
+      const infoMessage = error as FirebaseError;
+      
+      switch(infoMessage.code) {
+        case 'auth/invalid-email':
+        case 'auth/invalid-credential':
+          setInfoMessage('ℹ️ Contul introdus nu a fost găsit, date incorecte.')
+          break;
+        default:
+          setInfoMessage('❓A aparut o eroare: ' + infoMessage.code);
+          break;
+      }
+    }
+    finally {
+      setIsLoading(false);
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      router.replace('/home');
+    }
+    else {
+    }
+  });
+
   useEffect(() => {
     if (infoMessage) {
       setDisplayText(infoMessage);
@@ -100,7 +132,7 @@ export default function Index() {
             <TouchableOpacity style={styles.button} onPress={signUp}>
               <Text style={styles.buttonText}>Inregistrare</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, {backgroundColor: successColor}]}>
+            <TouchableOpacity style={[styles.button, {backgroundColor: successColor}]} onPress={signIn}>
               <Text style={styles.buttonText}>Autentificare</Text>
             </TouchableOpacity>
           </View>
