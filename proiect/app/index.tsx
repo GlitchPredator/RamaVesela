@@ -60,6 +60,9 @@ export default function Index() {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, email ,password);
       setInfoMessage('✅ Ai fost autentificat cu succes!');
+
+      //@ts-ignore
+      router.replace('/home/tabs');
     }
     catch (error) {
       const infoMessage = error as FirebaseError;
@@ -81,8 +84,6 @@ export default function Index() {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      //@ts-ignore
-      router.replace('/home');
     }
     else {
     }
