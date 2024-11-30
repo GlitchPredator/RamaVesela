@@ -81,6 +81,7 @@ export default function Index() {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      //@ts-ignore
       router.replace('/home');
     }
     else {
