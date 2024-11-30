@@ -8,7 +8,7 @@
 ```
 ---
 
-### - Devino eroul casei tale cu noua aplicație de rame pentru fotografii aplicând principiul <b>EISA</b>:
+### - Devino eroul casei tale cu noua aplicație de rame pentru fotografii <br>aplicând principiul <b>EISA</b>:
 - <b>Editează</b> ce editai în (3) aplicații doar (într-una) singură 📸
 - <b>Inovează-ți</b> stilul folosind tehnologia AI 🤖
 - <b>Salvează-ți</b> amintirile în cont  💾
