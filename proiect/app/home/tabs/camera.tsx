@@ -1,5 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getAuth } from 'firebase/auth';
+import {initializeApp} from 'firebase/app';
+import { firebaseConfig } from '@/config/firebaseConfig';
+
+initializeApp(firebaseConfig);
+
+const auth = getAuth();
 
 export default function Tab() {
   return (
