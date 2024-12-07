@@ -69,6 +69,7 @@ export default function Index() {
       
       switch(infoMessage.code) {
         case 'auth/invalid-email':
+        case 'auth/missing-password':
         case 'auth/invalid-credential':
           setInfoMessage('ℹ️ Contul introdus nu a fost găsit, date incorecte.')
           break;

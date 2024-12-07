@@ -46,7 +46,7 @@ export default function Tab() {
           </KeyboardAvoidingView>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={signOut}>
-                    <Text style={styles.buttonText}>Log out</Text>
+                    <Text style={styles.buttonText}>Ieșire</Text>
                 </TouchableOpacity>
             </View>
         </LinearGradient>
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 50,
+    width: 90,  
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
