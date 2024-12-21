@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Button } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions, FlashMode} from 'expo-camera';
+import { View, Text, StyleSheet, KeyboardAvoidingView} from 'react-native';
+import { CameraView, CameraType, useCameraPermissions, FlashMode} from 'expo-camera'; 
 import { LinearGradient } from 'expo-linear-gradient';
 import { getAuth } from 'firebase/auth';
 import {initializeApp} from 'firebase/app';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { firebaseConfig } from '@/config/firebaseConfig';
 import { CustomButton } from '@/app/customButton';
+
+import * as MediaLibrary from 'expo-media-library';
 
 initializeApp(firebaseConfig);
 
@@ -16,12 +18,26 @@ export default function Tab() {
   const [permission, requestPermissions] = useCameraPermissions();
   const [flash, setFlash] = useState<FlashMode>();
   const [torch, setTorch] = useState<boolean>(false);
+  const cameraRef = useRef<CameraView>(null);
 
   const toggleCameraFacing = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
   const takeCameraPhoto = () => {
+    const camRef = cameraRef.current;
+    if (camRef) {
+      camRef.takePictureAsync()
+        .then(async (imageData) => {
+          const imageUri = imageData?.uri ?? '';
+          const asset = await MediaLibrary.createAssetAsync(imageUri);
+
+          console.log(asset);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    }
   }
 
   const changePhotoFrame = () => {
@@ -58,7 +74,7 @@ export default function Tab() {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} enableTorch={torch}>
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing} enableTorch={torch}>
         <View style={styles.buttonContainer}>
           <CustomButton // Revert camera
             touchableStyle={styles.cameraButton}
