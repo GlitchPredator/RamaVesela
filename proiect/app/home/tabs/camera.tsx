@@ -17,18 +17,17 @@ export default function Tab() {
   const [flash, setFlash] = useState<FlashMode>();
   const [torch, setTorch] = useState<boolean>(false);
 
-  function toggleCameraFacing() {
+  const toggleCameraFacing = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
-  function takeCameraPhoto() {
+  const takeCameraPhoto = () => {
   }
 
-  function changePhotoFrame() {
-
+  const changePhotoFrame = () => {
   }
 
-  function turnFlashLightOn() {
+  const turnFlashLightOn = () => {
     // setFlash(currentState => (currentState === 'on' ? 'off' : 'on'));
     setTorch(currentState => (currentState === true ? false : true));
   }
