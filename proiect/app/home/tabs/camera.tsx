@@ -16,7 +16,6 @@ const auth = getAuth();
 export default function Tab() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermissions] = useCameraPermissions();
-  const [flash, setFlash] = useState<FlashMode>();
   const [torch, setTorch] = useState<boolean>(false);
   const cameraRef = useRef<CameraView>(null);
 
