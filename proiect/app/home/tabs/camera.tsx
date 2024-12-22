@@ -19,31 +19,33 @@ export default function Tab() {
   const [torch, setTorch] = useState<boolean>(false);
   const cameraRef = useRef<CameraView>(null);
 
+  const happyRamaFolder = "Rama Vesela";
+
   const toggleCameraFacing = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
-  const takeCameraPhoto = () => {
+  const takeCameraPhoto = async () => {
     const camRef = cameraRef.current;
-    if (camRef) {
-      camRef.takePictureAsync()
-        .then(async (imageData) => {
-          const imageUri = imageData?.uri ?? '';
-          const asset = await MediaLibrary.createAssetAsync(imageUri);
 
-          console.log(asset);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+    if (camRef) {
+      const photo = await cameraRef.current.takePictureAsync();
+      const photoUri = photo?.uri ?? '';
+      const album = await MediaLibrary.getAlbumAsync(happyRamaFolder);
+
+      const asset = await MediaLibrary.createAssetAsync(photoUri);
+      if (album === null) {
+        await MediaLibrary.createAlbumAsync(happyRamaFolder, asset, false);
+      } else {
+        await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
+      }
     }
   }
 
   const changePhotoFrame = () => {
   }
 
-  const turnFlashLightOn = () => {
-    // setFlash(currentState => (currentState === 'on' ? 'off' : 'on'));
+  const turnFlashLight = () => {
     setTorch(currentState => (currentState === true ? false : true));
   }
 
@@ -96,7 +98,7 @@ export default function Tab() {
           <CustomButton // Flash light button
             touchableStyle={[styles.cameraButton, {left:'85%', top: '-7%'}]}
             textStyle={styles.cameraButtonText}
-            onButtonPress={turnFlashLightOn}
+            onButtonPress={turnFlashLight}
             buttonText='💡'
           />
         </View>
