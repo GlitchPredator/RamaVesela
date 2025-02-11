@@ -7,3 +7,4 @@
 </Curs>
 ```
 ---
+- RamaVesela este o aplicatie de editare foto creată în scop educațional pentru laboratorul de „Sisteme Mobile și Aplicații” din cadrul AC/UPT.
